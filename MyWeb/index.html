@@ -9,7 +9,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>MyWeb - 방명록</title>
+    <title>MyWeb|방명록</title>
+
+    <meta property="og:image" content="https://www.google.com/url?sa=i&url=https%3A%2F%2Fe.kakao.com%2Ft%2Fbroken-bear-ver-3&psig=AOvVaw2vIliViE8Lv405D1YKFs4f&ust=1673199072193000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCIjj5bX-tfwCFQAAAAAdAAAAABAD">
+    <meta property="og:description" content="맛집 추천 사이트 입니다.">
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -49,12 +52,24 @@
             </li>
             <!-- Divider -->
             <hr class="sidebar-divider">
-            <li class="nav-item active">
-                <a class="nav-link" href="index_2.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>가봐야할 맛집</span></a>
-            </li>
 
+            <div class="sidebar-heading" style="color:#fff;font-size: 12px;">
+                맛집
+            </div>
+ 
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>지역</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded" id ="collapsePagesInner">
+                        <h6 class="collapse-header" style="color:black;font-size: 11px;">지역</h6>
+                    </div>
+                </div>
+            </li>
         </ul>
         <!-- End of Sidebar -->
 
@@ -109,11 +124,11 @@
                                                 <div class="form-group row">
                                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                                         <input type="text" class="form-control form-control-user" id="col1"
-                                                            placeholder="Name">
+                                                            placeholder="작성자">
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <input type="text" class="form-control form-control-user" id="col2"
-                                                            placeholder="Content">
+                                                            placeholder="할말">
                                                     </div>
                                                 </div>
                                                 <a href="javascript:fn_setContent();" class="btn btn-primary btn-user btn-block">
@@ -164,26 +179,6 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -194,18 +189,11 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-
     <script>
         // MyWeb Function 
 
         function fn_getContent() {
-                $.ajax({
+            $.ajax({
                 type:"get",
                 url:"https://sheets.googleapis.com/v4/spreadsheets/15sKb-0S4JtrmlNMr5pOO32UXZRbV9LfXFdF88G5pn28/values/doc1!A2:D99999?key=AIzaSyDNnbhF4GFtmqah4kR_qHPFN9jq1oyEbdU",
                 dataType:"json",
@@ -215,16 +203,43 @@
                     $.each(contentArr, function(idx){
                         var rowArr = contentArr[idx];
                         $("#carBody").append(fn_cardContent(rowArr[0], rowArr[1], rowArr[2]));
+                    });                  
+                },
+                error:function(){
+                    console.log("통신에러");
+                }
+            });
+        }
+
+        function fn_locLoad() {
+            $.ajax({
+                type:"get",
+                url:"https://sheets.googleapis.com/v4/spreadsheets/15sKb-0S4JtrmlNMr5pOO32UXZRbV9LfXFdF88G5pn28/values/loc!A2:D99999?key=AIzaSyDNnbhF4GFtmqah4kR_qHPFN9jq1oyEbdU",
+                dataType:"json",
+                success: function(data){
+                    var contentArr = data["values"];
+
+                    $.each(contentArr, function(idx){
+                        var rowArr = contentArr[idx];
+                        var txt = '<a class="collapse-item" href="index_2.html?loc='+rowArr[1]+'">'+rowArr[0]+'</a>';
+                        $("#collapsePagesInner").append(txt);
                     });
                 },
                 error:function(){
                     console.log("통신에러");
                 }
-            })
+            });
         }
+
+        var isSendding = false;
 
         function fn_setContent() {
             
+            if (isSendding) {
+                alert("잠시만 기다려주십시오.");
+                return false;
+            }
+
             if ($("#col1").val() == null || $("#col1").val() == "") {
                 alert("작성자를 입력해주세요.");
                 return false;
@@ -254,6 +269,9 @@
             var timeString = hours + ':' + minutes  + ':' + seconds;
             var dateString = year + '-' + month  + '-' + day + " " + timeString;
 
+            // 전송중
+            isSendding = true;
+
             $.ajax({
                 type: "GET",
                 url: "https://script.google.com/macros/s/AKfycbyazeHWZoxuoIRsvv4ZD4CVMeAisCj4eYebDQoVzyoi4fCeb2dLdA5tcxb0nES5O7w/exec",
@@ -265,6 +283,10 @@
                 success: function(response){
                     alert('방명록이 작성되었습니다.');
                     location.reload();
+                },
+                error : function() {
+                    alert("오류가 발생하였습니다.");
+                    isSendding = false;
                 }
             });
         }
@@ -287,7 +309,11 @@
         }
 
         $(document).ready(function(){
+            // 방명록 로딩
             fn_getContent();
+
+            // 지역 로딩
+            fn_locLoad();
         })
     </script>
 </body>

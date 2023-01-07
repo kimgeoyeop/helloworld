@@ -126,33 +126,13 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- DataTales Example -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">방명록</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>작성자</th>
-                                                <th>할말</th>
-                                                <th>작성일자</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="writeTbody">
-                                        
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-    
+                        </div>            
                     </div>    
 
+                    <!-- First Column -->
+                    <div id="carBody" class="container-fluid">
+                    
+                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -231,21 +211,12 @@
                 url:"https://sheets.googleapis.com/v4/spreadsheets/15sKb-0S4JtrmlNMr5pOO32UXZRbV9LfXFdF88G5pn28/values/doc1!A2:D99999?key=AIzaSyDNnbhF4GFtmqah4kR_qHPFN9jq1oyEbdU",
                 dataType:"json",
                 success: function(data){
-                    var tbody = "";
                     var contentArr = data["values"];
 
                     $.each(contentArr, function(idx){
-
                         var rowArr = contentArr[idx];
-
-                        tbody += "<tr>";
-                        tbody += "<td>"+rowArr[0]+"</td>";
-                        tbody += "<td>"+rowArr[1]+"</td>";
-                        tbody += "<td>"+rowArr[2]+"</td>";
-                        tbody += "</tr>";   
+                        $("#carBody").append(fn_cardContent(rowArr[0], rowArr[1], rowArr[2]));
                     });
-
-                    $('#writeTbody').append(tbody);
                 },
                 error:function(){
                     console.log("통신에러");
@@ -291,6 +262,23 @@
                     location.reload();
                 }
             });
+        }
+
+        function fn_cardContent(psName, psTitle, psDate) {
+            
+            var content = '<div class="">'+                
+                '<div class="card shadow mb-4">'+
+                    '<div class="card-header py-3">'+
+                        '<h6 class="m-0 font-weight-bold text-primary">'+psName+'</h6>'+
+                    '</div>'+
+                    '<div class="card-body">'+
+                        '<p class="text-xs">'+psDate+'</p>'+
+                        '<p class="text-lg mb-0">'+psTitle+'</p>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+            
+            return content;
         }
 
         $(document).ready(function(){

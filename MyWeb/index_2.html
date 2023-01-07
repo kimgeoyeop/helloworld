@@ -50,7 +50,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
             <li class="nav-item active">
-                <a class="nav-link" href="index_2.html">
+                <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>가봐야할 맛집</span></a>
             </li>
@@ -91,43 +91,7 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <div class="container-fluid">
-
-                        <!-- 방명록 작성 -->
-                        <div class="card o-hidden border-0 shadow-lg my-5">
-                            <div class="card-body p-0">
-                                <!-- Nested Row within Card Body -->
-                                <div class="row">
-                                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
-                                    <div class="col-lg-7">
-                                        <div class="p-5">
-                                            <div class="text-center">
-                                                <h1 class="h4 text-gray-900 mb-4">방명록 남기기</h1>
-                                                <h3 class="h6 text-gray-900 mb-4">정렬이 잘 안되네요..<br/>작성하면 맨아래 달려요.</h3>
-                                            </div>
-                                            <form class="user">
-                                                <div class="form-group row">
-                                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                                        <input type="text" class="form-control form-control-user" id="col1"
-                                                            placeholder="Name">
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <input type="text" class="form-control form-control-user" id="col2"
-                                                            placeholder="Content">
-                                                    </div>
-                                                </div>
-                                                <a href="javascript:fn_setContent();" class="btn btn-primary btn-user btn-block">
-                                                    작성
-                                                </a>
-                                            </form>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>            
-                    </div>    
-
+                    
                     <!-- First Column -->
                     <div id="carBody" class="container-fluid">
                     
@@ -203,11 +167,10 @@
 
     <script>
         // MyWeb Function 
-
         function fn_getContent() {
                 $.ajax({
                 type:"get",
-                url:"https://sheets.googleapis.com/v4/spreadsheets/15sKb-0S4JtrmlNMr5pOO32UXZRbV9LfXFdF88G5pn28/values/doc1!A2:D99999?key=AIzaSyDNnbhF4GFtmqah4kR_qHPFN9jq1oyEbdU",
+                url:"https://sheets.googleapis.com/v4/spreadsheets/15sKb-0S4JtrmlNMr5pOO32UXZRbV9LfXFdF88G5pn28/values/doc2!A2:D99999?key=AIzaSyDNnbhF4GFtmqah4kR_qHPFN9jq1oyEbdU",
                 dataType:"json",
                 success: function(data){
                     var contentArr = data["values"];
@@ -223,53 +186,7 @@
             })
         }
 
-        function fn_setContent() {
-            
-            if ($("#col1").val() == null || $("#col1").val() == "") {
-                alert("작성자를 입력해주세요.");
-                return false;
-            }
-
-            if ($("#col2").val() == null || $("#col2").val() == "") {
-                alert("할말을 입력해주세요.");
-                return false;
-            }
-            
-            var str = $("#col2").val();
-            str = str.replace(/거엽/gi, '**');
-            str = str.replace(/여업/gi, '**');
-            str = str.replace(/거여/gi, '**');
-            str = str.replace(/어업/gi, '**');
-
-            var today = new Date();
-
-            var year = today.getFullYear();
-            var month = ('0' + (today.getMonth() + 1)).slice(-2);
-            var day = ('0' + today.getDate()).slice(-2);
-
-            var hours = ('0' + today.getHours()).slice(-2); 
-            var minutes = ('0' + today.getMinutes()).slice(-2);
-            var seconds = ('0' + today.getSeconds()).slice(-2); 
-
-            var timeString = hours + ':' + minutes  + ':' + seconds;
-            var dateString = year + '-' + month  + '-' + day + " " + timeString;
-
-            $.ajax({
-                type: "GET",
-                url: "https://script.google.com/macros/s/AKfycbyazeHWZoxuoIRsvv4ZD4CVMeAisCj4eYebDQoVzyoi4fCeb2dLdA5tcxb0nES5O7w/exec",
-                data: {
-                    "name"     : $("#col1").val(),
-                    "contents" : str,
-                    "date"     : dateString
-                },
-                success: function(response){
-                    alert('방명록이 작성되었습니다.');
-                    location.reload();
-                }
-            });
-        }
-
-        function fn_cardContent(psName, psTitle, psDate) {
+        function fn_cardContent(psName, psTitle, psUrl) {
             
             var content = '<div class="">'+                
                 '<div class="card shadow mb-4">'+
@@ -277,8 +194,8 @@
                         '<h6 class="m-0 font-weight-bold text-primary">'+psName+'</h6>'+
                     '</div>'+
                     '<div class="card-body">'+
-                        '<p class="text-xs">'+psDate+'</p>'+
-                        '<p class="text-lg mb-0">'+psTitle+'</p>'+
+                        '<p class="text-lg mb-0">'+psTitle+'</p><br/>'+
+                        '<p class="text-md mb-0"><a href="'+psUrl+'" target="_blank">지도</a>' + '</p>'+
                     '</div>'+
                 '</div>'+
             '</div>';

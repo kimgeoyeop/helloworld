@@ -100,7 +100,7 @@
                                         <div class="p-5">
                                             <div class="text-center">
                                                 <h1 class="h4 text-gray-900 mb-4">방명록 남기기</h1>
-                                                <h3 class="h6 text-gray-900 mb-4">정렬이 잘 안되네요.. 작성하면 맨아래 달려요.</h3>
+                                                <h3 class="h6 text-gray-900 mb-4">정렬이 잘 안되네요..<br/>작성하면 맨아래 달려요.</h3>
                                             </div>
                                             <form class="user">
                                                 <div class="form-group row">
@@ -231,7 +231,11 @@
                 alert("할말을 입력해주세요.");
                 return false;
             }
- 
+            
+            var str = $("#col2").val();
+            str = str.replace(/거엽/gi, '**');
+            str = str.replace(/여업/gi, '**');
+
             var today = new Date();
 
             var year = today.getFullYear();
@@ -250,7 +254,7 @@
                 url: "https://script.google.com/macros/s/AKfycbyazeHWZoxuoIRsvv4ZD4CVMeAisCj4eYebDQoVzyoi4fCeb2dLdA5tcxb0nES5O7w/exec",
                 data: {
                     "name"     : $("#col1").val(),
-                    "contents" : $("#col2").val(),
+                    "contents" : str,
                     "date"     : dateString
                 },
                 success: function(response){

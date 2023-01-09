@@ -43,7 +43,9 @@
                 </div>
                 <div class="sidebar-brand-text mx-3">MyWeb <sup>1</sup></div>
             </a>
-
+            <div class="sidebar-heading" style="color:#fff;font-size: 12px;" id="todayTxt">
+                Today : 0
+            </div>
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
@@ -65,10 +67,24 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>지역</span>
+                    <span>밥집</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded" id ="collapsePagesInner">
+                        <h6 class="collapse-header" style="color:black;font-size: 11px;">지역</h6>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages2"
+                    aria-expanded="true" aria-controls="collapsePages2">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>카페</span>
+                </a>
+                <div id="collapsePages2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded" id ="collapsePagesInner2">
                         <h6 class="collapse-header" style="color:black;font-size: 11px;">지역</h6>
                     </div>
                 </div>
@@ -192,6 +208,8 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
+    <script src="js/common.js"></script>
+
     <script>
         // MyWeb Function 
 
@@ -224,8 +242,30 @@
 
                     $.each(contentArr, function(idx){
                         var rowArr = contentArr[idx];
-                        var txt = '<a class="collapse-item" href="index_2.html?loc='+rowArr[1]+'">'+rowArr[0]+'</a>';
+                        var txt = "";
+                        // 밥집
+                        txt = '<a class="collapse-item" href="index_2.html?loc='+rowArr[1]+'">'+rowArr[0]+'</a>';
                         $("#collapsePagesInner").append(txt);
+                    });
+                },
+                error:function(){
+                    console.log("통신에러");
+                }
+            });
+
+            $.ajax({
+                type:"get",
+                url:"https://sheets.googleapis.com/v4/spreadsheets/15sKb-0S4JtrmlNMr5pOO32UXZRbV9LfXFdF88G5pn28/values/loc_cafe!A2:D99999?key=AIzaSyDNnbhF4GFtmqah4kR_qHPFN9jq1oyEbdU",
+                dataType:"json",
+                success: function(data){
+                    var contentArr = data["values"];
+
+                    $.each(contentArr, function(idx){
+                        var rowArr = contentArr[idx];
+                        var txt = "";
+                        // 카페
+                        txt = '<a class="collapse-item" href="index_2.html?loc='+rowArr[1]+'">'+rowArr[0]+'</a>';
+                        $("#collapsePagesInner2").append(txt);
                     });
                 },
                 error:function(){
@@ -277,11 +317,12 @@
 
             $.ajax({
                 type: "GET",
-                url: "https://script.google.com/macros/s/AKfycbyazeHWZoxuoIRsvv4ZD4CVMeAisCj4eYebDQoVzyoi4fCeb2dLdA5tcxb0nES5O7w/exec",
+                url: "https://script.google.com/macros/s/AKfycbwhRQemrT92M2vhDWeX76OYBveUde4PtsLka6rCYs-umlwkqXJ_90jSIFPmxUHdFkE/exec",
                 data: {
                     "name"     : $("#col1").val(),
                     "contents" : str,
-                    "date"     : dateString
+                    "date"     : dateString,
+                    "sheet"    : "doc1"
                 },
                 success: function(response){
                     alert('방명록이 작성되었습니다.');
